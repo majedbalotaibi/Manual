@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="دليل الغذاء">
+<meta name="theme-color" content="#0F6E56">
+<title>دليل بطاقات وصف الاغذية</title>
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="manifest" href="./manifest.json">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;-webkit-text-size-adjust:100%;}
+body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;background:#f0ede6;color:#1a1a18;overscroll-behavior:none;}
+
+/* ── LAYOUT ── */
+.app{max-width:720px;margin:0 auto;min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{background:#0F6E56;color:white;position:sticky;top:0;z-index:100;
+  padding-top:env(safe-area-inset-top,0);box-shadow:0 2px 12px rgba(0,0,0,.3);}
+.topbar-inner{display:flex;align-items:center;gap:10px;padding:10px 14px;}
+.topbar-logo{height:34px;width:auto;border-radius:4px;background:white;padding:2px 4px;}
+.topbar-txt{flex:1;text-align:right;}
+.topbar-title{font-size:15px;font-weight:700;}
+.topbar-sub{font-size:10px;opacity:.8;margin-top:1px;}
+
+/* ── PROGRESS ── */
+.prog-row{background:#e8e4dc;border-bottom:1px solid #ccc;
+  display:flex;align-items:center;gap:8px;padding:7px 14px;}
+.prog-lbl{font-size:11px;color:#5f5e5a;white-space:nowrap;}
+.prog-track{flex:1;height:7px;background:#ccc;border-radius:4px;overflow:hidden;}
+.prog-fill{height:100%;background:#0F6E56;border-radius:4px;width:0%;transition:width .3s;}
+.prog-ct{font-size:12px;font-weight:700;color:#0F6E56;white-space:nowrap;min-width:44px;text-align:left;}
+.reset-btn{font-size:11px;padding:4px 10px;border:1px solid #aaa;border-radius:20px;
+  background:white;color:#5f5e5a;cursor:pointer;touch-action:manipulation;white-space:nowrap;}
+
+/* ── NAV TABS ── */
+.nav-tabs{background:white;border-bottom:1px solid #d3d1c7;
+  display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-tab{flex-shrink:0;padding:11px 14px;font-size:12px;color:#5f5e5a;white-space:nowrap;
+  border:none;border-bottom:3px solid transparent;background:none;cursor:pointer;
+  touch-action:manipulation;font-family:'Segoe UI',Tahoma,Arial,sans-serif;}
+.nav-tab.active{color:#0F6E56;border-bottom-color:#0F6E56;font-weight:700;}
+
+/* ── SCREENS ── */
+.screen{display:none;padding-bottom:20px;}
+.screen.active{display:block;}
+
+/* ── COVER ── */
+.cover{padding:16px;}
+.cover-logo{display:block;margin:0 auto 14px;max-width:240px;width:100%;}
+.cover-box{background:#E1F5EE;border:1.5px solid #5DCAA5;border-radius:12px;
+  padding:18px;text-align:center;margin-bottom:12px;}
+.cover-title{font-size:21px;font-weight:800;color:#0F6E56;}
+.cover-sub{font-size:12px;color:#5f5e5a;margin-top:4px;}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.meta-cell{background:white;border-radius:8px;padding:10px;text-align:center;border:1px solid #d3d1c7;}
+.meta-lbl{font-size:10px;font-weight:700;color:#0F6E56;margin-bottom:3px;}
+.meta-val{font-size:11px;color:#1a1a18;line-height:1.3;}
+.qr-box{background:#E1F5EE;border:1.5px solid #5DCAA5;border-radius:12px;
+  padding:14px;display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.qr-img{width:90px;height:90px;flex-shrink:0;border-radius:4px;}
+.qr-txt{flex:1;text-align:right;}
+.qr-title{font-size:13px;font-weight:700;color:#0F6E56;}
+.qr-sub{font-size:11px;color:#5f5e5a;margin-top:4px;}
+.legend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
+.leg-cell{border-radius:8px;padding:8px;text-align:center;}
+.leg-lbl{font-size:11px;font-weight:700;}
+.leg-sub{font-size:9px;margin-top:2px;}
+.start-btn{width:100%;background:#0F6E56;color:white;border:none;border-radius:12px;
+  padding:14px;font-size:15px;font-weight:700;cursor:pointer;touch-action:manipulation;
+  font-family:'Segoe UI',Tahoma,Arial,sans-serif;}
+
+/* ── HOW TO ── */
+.steps{padding:12px;display:flex;flex-direction:column;gap:8px;}
+.step{display:flex;gap:12px;background:white;border-radius:10px;padding:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.07);}
+.step-num{background:#E1F5EE;color:#0F6E56;font-size:20px;font-weight:800;
+  width:40px;height:40px;min-width:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;}
+.step-body{flex:1;text-align:right;}
+.step-title{font-size:14px;font-weight:700;color:#0F6E56;margin-bottom:3px;}
+.step-desc{font-size:12px;color:#5f5e5a;line-height:1.5;}
+.warn-box{background:#FAEEDA;border-right:4px solid #EF9F27;margin:0 12px 12px;
+  padding:10px 14px;border-radius:0 8px 8px 0;font-size:12px;font-weight:600;
+  color:#854F0B;text-align:right;line-height:1.55;}
+
+/* ── CHECKLIST ── */
+.check-content{padding:12px 12px 20px;}
+.sec-card{background:white;border-radius:12px;margin-bottom:10px;overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.sec-hdr{display:flex;align-items:center;background:#0F6E56;cursor:pointer;
+  touch-action:manipulation;user-select:none;-webkit-user-select:none;}
+.sec-num-badge{background:#5DCAA5;color:white;font-size:16px;font-weight:800;
+  width:44px;min-width:44px;height:48px;display:flex;align-items:center;justify-content:center;}
+.sec-title{flex:1;color:white;font-size:13px;font-weight:700;padding:0 12px;text-align:right;}
+.sec-chev{color:rgba(255,255,255,.8);padding:0 12px;font-size:14px;
+  transition:-webkit-transform .2s;transition:transform .2s;display:inline-block;}
+.sec-chev.open{-webkit-transform:rotate(180deg);transform:rotate(180deg);}
+.sec-body{display:none;}
+.sec-body.open{display:block;}
+.grp-hdr{background:#E1F5EE;padding:7px 12px;font-size:11px;font-weight:700;
+  color:#0F6E56;text-align:right;border-top:1px solid #ccc;}
+.chk-row{display:flex;align-items:flex-start;padding:10px 12px;border-top:1px solid #f0ede6;
+  gap:10px;min-height:48px;background:white;cursor:pointer;touch-action:manipulation;
+  -webkit-user-select:none;user-select:none;}
+.chk-row:nth-child(even){background:#f9f8f6;}
+.chk-row:active{background:#E1F5EE;}
+.chk-txt-col{flex:1;text-align:right;}
+.chk-txt{font-size:13px;color:#1a1a18;line-height:1.5;}
+.tags{display:flex;gap:4px;justify-content:flex-end;margin-top:4px;flex-wrap:wrap;}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;}
+.t-req{background:#FCEBEB;color:#A32D2D;}
+.t-crit{background:#FAEEDA;color:#854F0B;}
+.t-opt{background:#E1F5EE;color:#0F6E56;}
+.gso-tag{font-size:9px;padding:2px 6px;border-radius:8px;background:#E6F1FB;
+  color:#185FA5;font-weight:600;}
+.cb-col{display:flex;align-items:center;justify-content:center;min-width:32px;padding-top:1px;}
+.cb{width:22px;height:22px;border-radius:5px;border:2px solid #5DCAA5;background:white;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;}
+.cb.on{background:#0F6E56;border-color:#0F6E56;}
+.cb.on::after{content:'✓';color:white;font-size:14px;font-weight:700;}
+.sec-warn{background:#FAEEDA;border-right:4px solid #EF9F27;margin:8px 12px;
+  padding:9px 12px;border-radius:0 6px 6px 0;font-size:12px;font-weight:600;
+  color:#854F0B;text-align:right;line-height:1.5;}
+
+/* ── CLAIMS ── */
+.claims-wrap{padding:12px;}
+.sec-label{font-size:13px;font-weight:800;color:#0F6E56;text-align:right;
+  margin:14px 0 8px;padding-right:6px;border-right:4px solid #5DCAA5;}
+.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;margin-bottom:10px;}
+.chip{font-size:11px;padding:5px 12px;border-radius:20px;border:1.5px solid #d3d1c7;
+  background:white;color:#5f5e5a;cursor:pointer;touch-action:manipulation;
+  font-family:'Segoe UI',Tahoma,Arial,sans-serif;-webkit-tap-highlight-color:transparent;}
+.chip.on{background:#0F6E56;color:white;border-color:#0F6E56;}
+.food-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
+.food-chip{background:white;border:1.5px solid #d3d1c7;border-radius:10px;padding:8px 4px;
+  text-align:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.food-chip.on{background:#E1F5EE;border-color:#0F6E56;}
+.food-icon{font-size:22px;display:block;margin-bottom:2px;}
+.food-nm{font-size:10px;color:#1a1a18;font-family:'Segoe UI',Tahoma,Arial,sans-serif;
+  font-weight:600;line-height:1.3;}
+.food-chip.on .food-nm{color:#0F6E56;}
+.claim-card{background:white;border-radius:10px;margin-bottom:8px;overflow:hidden;
+  box-shadow:0 1px 3px rgba(0,0,0,.08);border-right:4px solid #d3d1c7;}
+.claim-card.allowed{border-right-color:#0F6E56;}
+.claim-card.conditional{border-right-color:#EF9F27;}
+.claim-card.prohibited{border-right-color:#A32D2D;}
+.claim-hdr{display:flex;align-items:center;gap:8px;padding:11px 12px;
+  cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+.c-badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+.c-allowed{background:#E1F5EE;color:#0F6E56;}
+.c-conditional{background:#FAEEDA;color:#854F0B;}
+.c-prohibited{background:#FCEBEB;color:#A32D2D;}
+.claim-name{flex:1;font-size:13px;font-weight:700;color:#1a1a18;text-align:right;}
+.claim-chev{color:#888;font-size:11px;transition:-webkit-transform .2s;transition:transform .2s;flex-shrink:0;}
+.claim-chev.open{-webkit-transform:rotate(180deg);transform:rotate(180deg);}
+.claim-body{display:none;padding:0 14px 12px;border-top:1px solid #f0ede6;}
+.claim-body.open{display:block;}
+.claim-detail{margin-top:8px;font-size:12px;line-height:1.6;color:#1a1a18;text-align:right;}
+.claim-cond{background:#FAEEDA;border-right:3px solid #EF9F27;padding:8px 12px;
+  margin-top:8px;border-radius:0 6px 6px 0;font-size:11px;color:#854F0B;
+  text-align:right;line-height:1.5;}
+.claim-cond.green{background:#E1F5EE;border-right-color:#0F6E56;color:#0F6E56;}
+.claim-cond.red{background:#FCEBEB;border-right-color:#A32D2D;color:#A32D2D;}
+.claim-ref{margin-top:7px;font-size:10px;color:#185FA5;background:#E6F1FB;
+  padding:3px 8px;border-radius:8px;display:inline-block;font-weight:600;}
+.thr-table{background:#f5f4f0;border-radius:8px;padding:8px 10px;margin-top:8px;}
+.thr-row{display:flex;justify-content:space-between;align-items:center;
+  padding:4px 0;border-bottom:1px solid #e8e6e0;font-size:11px;}
+.thr-row:last-child{border-bottom:none;}
+.thr-lbl{color:#5f5e5a;}
+.thr-val{font-weight:700;color:#1a1a18;}
+.no-results{text-align:center;padding:40px 20px;color:#5f5e5a;font-size:13px;}
+
+/* ── REFS ── */
+.refs-wrap{margin:12px;border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.refs-hdr{display:grid;grid-template-columns:2fr 1fr;background:#0F6E56;padding:8px 12px;}
+.refs-hdr span{font-size:11px;font-weight:700;color:white;}
+.refs-row{display:grid;grid-template-columns:2fr 1fr;padding:9px 12px;
+  border-top:1px solid #f0ede6;align-items:center;}
+.refs-row:nth-child(even){background:#f9f8f6;}
+.refs-title{font-size:12px;color:#1a1a18;text-align:right;}
+.refs-code{font-size:11px;font-weight:700;color:#185FA5;background:#E6F1FB;
+  padding:2px 7px;border-radius:8px;text-align:center;white-space:nowrap;}
+
+/* ── INSTALL BANNER ── */
+.install-bar{background:#0F6E56;color:white;padding:10px 14px;
+  display:flex;align-items:center;gap:10px;}
+.install-txt{flex:1;font-size:12px;text-align:right;}
+.install-btn{background:white;color:#0F6E56;font-size:12px;font-weight:700;
+  padding:6px 14px;border-radius:20px;border:none;cursor:pointer;
+  touch-action:manipulation;white-space:nowrap;flex-shrink:0;}
+.install-close{font-size:18px;cursor:pointer;padding:4px;touch-action:manipulation;flex-shrink:0;}
+.ios-bar{background:#185FA5;}
+.hidden{display:none!important;}
+
+@media(prefers-color-scheme:dark){
+  body{background:#1a1a18;color:#f0ede6;}
+  .sec-card,.step,.meta-cell,.claim-card,.food-chip,.chip,.refs-wrap{background:#2a2a28;}
+  .chk-row{background:#2a2a28;}
+  .chk-row:nth-child(even){background:#242422;}
+  .chk-row:active,.food-chip.on{background:#1a3d35;}
+  .grp-hdr,.cover-box,.qr-box{background:#1a3d35;}
+  .nav-tabs{background:#2a2a28;}
+  .prog-row{background:#242422;border-color:#3a3a38;}
+  .refs-row:nth-child(even){background:#242422;}
+  .thr-table{background:#222;}
+  .chk-txt,.claim-name,.claim-detail,.refs-title,.food-nm,.thr-val{color:#f0ede6;}
+  .chip{border-color:#3a3a38;color:#b0b0a8;}
+  .food-chip{border-color:#3a3a38;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- INSTALL BANNERS -->
+<div id="installBar" class="install-bar hidden">
+  <span class="install-close" onclick="this.parentElement.classList.add('hidden')">✕</span>
+  <div class="install-txt">أضف التطبيق للشاشة الرئيسية للوصول السريع بدون إنترنت</div>
+  <button class="install-btn" onclick="doInstall()">تثبيت</button>
+</div>
+<div id="iosBar" class="install-bar ios-bar hidden">
+  <span class="install-close" onclick="this.parentElement.classList.add('hidden')">✕</span>
+  <div class="install-txt">لتثبيت التطبيق: اضغط Share ثم "Add to Home Screen" — يعمل بدون إنترنت</div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-txt">
+      <div class="topbar-title">دليل بطاقات وصف الاغذية</div>
+      <div class="topbar-sub">الهيئة العامة للغذاء والتغذية — الكويت</div>
+    </div>
+    <img src="./logo.png" class="topbar-logo" alt="PAFN">
+  </div>
+  <div class="prog-row">
+    <span class="prog-lbl">تقدم الفحص</span>
+    <div class="prog-track"><div class="prog-fill" id="pFill"></div></div>
+    <span class="prog-ct" id="pCount">0 / 0</span>
+    <button class="reset-btn" id="resetBtn">مسح ↺</button>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" id="tab-cover" onclick="goTo('cover')">الرئيسية</button>
+    <button class="nav-tab" id="tab-howto" onclick="goTo('howto')">الاستخدام</button>
+    <button class="nav-tab" id="tab-check" onclick="goTo('check')">قائمة الفحص</button>
+    <button class="nav-tab" id="tab-claims" onclick="goTo('claims')">الادعاءات</button>
+    <button class="nav-tab" id="tab-refs" onclick="goTo('refs')">المراجع</button>
+  </div>
+</div>
+
+<!-- COVER -->
+<div class="screen active" id="s-cover">
+  <div class="cover">
+    <img src="./logo.png" class="cover-logo" alt="PAFN">
+    <div class="cover-box">
+      <div class="cover-title">دليل بطاقات وصف الاغذية</div>
+      <div class="cover-sub">المواد الغذائية المعبأة المستوردة — مواصفات دول مجلس التعاون الخليجي</div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-cell"><div class="meta-lbl">المرجع</div><div class="meta-val">GSO 9:2022<br>GSO 2233:2025<br>GSO 2333:2022</div></div>
+      <div class="meta-cell"><div class="meta-lbl">الجهة</div><div class="meta-val">الهيئة العامة للغذاء والتغذية — الكويت</div></div>
+      <div class="meta-cell"><div class="meta-lbl">الإصدار</div><div class="meta-val" style="color:#0F6E56;font-weight:700;">1.0 — 2026</div></div>
+    </div>
+    <div class="qr-box">
+      <div class="qr-txt">
+        <div class="qr-title">امسح رمز QR للوصول إلى الدليل</div>
+        <div class="qr-sub">شارك الرابط مع زملائك</div>
+        <div class="qr-sub" style="margin-top:3px;color:#0F6E56;font-weight:600;">pafn.gov.kw</div>
+      </div>
+      <img src="./qr.png" class="qr-img" alt="QR Code" style="border-radius:0;">
+    </div>
+    <div style="margin-bottom:8px;text-align:right;font-size:11px;font-weight:700;color:#5f5e5a;">دليل الرموز</div>
+    <div class="legend-grid">
+      <div class="leg-cell" style="background:#FCEBEB;"><div class="leg-lbl" style="color:#A32D2D;">إلزامي</div><div class="leg-sub" style="color:#A32D2D;">متطلب إلزامي</div></div>
+      <div class="leg-cell" style="background:#FAEEDA;"><div class="leg-lbl" style="color:#854F0B;">حرج</div><div class="leg-sub" style="color:#854F0B;">رفض فوري</div></div>
+      <div class="leg-cell" style="background:#E1F5EE;"><div class="leg-lbl" style="color:#0F6E56;">اختياري</div><div class="leg-sub" style="color:#0F6E56;">مسموح أو معفى</div></div>
+    </div>
+    <button class="start-btn" onclick="goTo('check')">ابدأ الفحص ←</button>
+  </div>
+</div>
+
+<!-- HOW TO -->
+<div class="screen" id="s-howto">
+  <div class="steps">
+    <div class="step"><div class="step-num">١</div><div class="step-body"><div class="step-title">استلام الشحنة</div><div class="step-desc">افتح التطبيق عند وصول الشحنة. يعمل بدون إنترنت بعد التثبيت.</div></div></div>
+    <div class="step"><div class="step-num">٢</div><div class="step-body"><div class="step-title">الانتقال لقسم الفحص</div><div class="step-desc">اضغط "قائمة الفحص" من القائمة العلوية للانتقال إلى بنود الفحص.</div></div></div>
+    <div class="step"><div class="step-num">٣</div><div class="step-body"><div class="step-title">تأشير مربعات الفحص</div><div class="step-desc">المس أي سطر أو مربع ☐ لتأشيره ✓. التأشيرات تُحفظ تلقائياً على الجهاز.</div></div></div>
+    <div class="step"><div class="step-num">٤</div><div class="step-body"><div class="step-title">قراءة المرجع التنظيمي</div><div class="step-desc">الشريحة الزرقاء أسفل كل بند تُشير إلى المواصفة والصفحة والقسم — استخدمها في محضر المخالفة.</div></div></div>
+    <div class="step"><div class="step-num">٥</div><div class="step-body"><div class="step-title">تقييم المخالفة</div><div class="step-desc">البنود "حرج" (برتقالي) = رفض فوري. البنود "إلزامي" (أحمر) = تصحيح قبل الإفراج.</div></div></div>
+    <div class="step"><div class="step-num">٦</div><div class="step-body"><div class="step-title">مسح التأشيرات لشحنة جديدة</div><div class="step-desc">اضغط "مسح ↺" في شريط التقدم أعلى الشاشة لبدء فحص شحنة جديدة.</div></div></div>
+  </div>
+  <div class="warn-box">⚠ مسببات الحساسية: أي إغفال في الإعلان عن مسبب حساسية معروف يستوجب الرفض الفوري للشحنة.</div>
+</div>
+
+<!-- CHECKLIST -->
+<div class="screen" id="s-check">
+  <div class="check-content" id="checkContainer"></div>
+</div>
+
+<!-- CLAIMS -->
+<div class="screen" id="s-claims">
+  <div class="claims-wrap">
+    <div class="sec-label">نوع الغذاء</div>
+    <div class="food-grid" id="foodGrid">
+      <div class="food-chip on" onclick="pickFood('all',this)"><span class="food-icon">🍽️</span><span class="food-nm">جميع الأغذية</span></div>
+      <div class="food-chip" onclick="pickFood('dairy',this)"><span class="food-icon">🥛</span><span class="food-nm">منتجات الألبان</span></div>
+      <div class="food-chip" onclick="pickFood('meat',this)"><span class="food-icon">🥩</span><span class="food-nm">اللحوم والدواجن</span></div>
+      <div class="food-chip" onclick="pickFood('fish',this)"><span class="food-icon">🐟</span><span class="food-nm">الأسماك والمأكولات البحرية</span></div>
+      <div class="food-chip" onclick="pickFood('bakery',this)"><span class="food-icon">🍞</span><span class="food-nm">المخبوزات والحبوب</span></div>
+      <div class="food-chip" onclick="pickFood('fats',this)"><span class="food-icon">🫒</span><span class="food-nm">الزيوت والدهون</span></div>
+      <div class="food-chip" onclick="pickFood('beverages',this)"><span class="food-icon">🧃</span><span class="food-nm">المشروبات</span></div>
+      <div class="food-chip" onclick="pickFood('fruits',this)"><span class="food-icon">🍎</span><span class="food-nm">الفواكه والخضروات</span></div>
+      <div class="food-chip" onclick="pickFood('processed',this)"><span class="food-icon">🥫</span><span class="food-nm">الأغذية المعالجة</span></div>
+    </div>
+    <div class="sec-label">نوع الادعاء</div>
+    <div class="chips" id="typeChips">
+      <button class="chip on" onclick="pickType('all',this)">الكل</button>
+      <button class="chip" onclick="pickType('nutrition',this)">تغذوي</button>
+      <button class="chip" onclick="pickType('health',this)">صحي</button>
+      <button class="chip" onclick="pickType('content',this)">محتوى</button>
+      <button class="chip" onclick="pickType('comparative',this)">مقارن</button>
+    </div>
+    <div class="sec-label">الحالة</div>
+    <div class="chips" id="statusChips">
+      <button class="chip on" onclick="pickStatus('all',this)">الكل</button>
+      <button class="chip" onclick="pickStatus('allowed',this)">✓ مسموح</button>
+      <button class="chip" onclick="pickStatus('conditional',this)">⚡ مشروط</button>
+      <button class="chip" onclick="pickStatus('prohibited',this)">✕ محظور</button>
+    </div>
+    <div class="sec-label" id="claimsTitle">النتائج</div>
+    <div id="claimsList"></div>
+  </div>
+</div>
+
+<!-- REFS -->
+<div class="screen" id="s-refs">
+  <div class="refs-wrap">
+    <div class="refs-hdr"><span style="text-align:right">عنوان المواصفة</span><span style="text-align:left">الرقم</span></div>
+    <div class="refs-row"><div class="refs-title">بطاقات المواد الغذائية المعبأة</div><div class="refs-code">GSO 9:2022</div></div>
+    <div class="refs-row"><div class="refs-title">اشتراطات البيانات التغذوية على بطاقات الأغذية</div><div class="refs-code">GSO 2233:2025</div></div>
+    <div class="refs-row"><div class="refs-title">الادعاءات الصحية والتغذوية المسموح بها</div><div class="refs-code" style="background:#E1F5EE;color:#0F6E56;font-weight:800;">GSO 2333:2022</div></div>
+    <div class="refs-row"><div class="refs-title">فترات صلاحية المنتجات الغذائية — الجزء الأول (إلزامي)</div><div class="refs-code">GSO 150-1</div></div>
+    <div class="refs-row"><div class="refs-title">فترات صلاحية المنتجات الغذائية — الجزء الثاني (اختياري)</div><div class="refs-code">GSO 150-2</div></div>
+    <div class="refs-row"><div class="refs-title">المواد المضافة المسموح باستخدامها في الأغذية</div><div class="refs-code">GSO 2500</div></div>
+    <div class="refs-row"><div class="refs-title">المنتجات الحلال — الاشتراطات العامة</div><div class="refs-code">GSO 2055-1</div></div>
+    <div class="refs-row"><div class="refs-title">الدليل الإرشادي للأغذية العضوية</div><div class="refs-code">GSO 2374</div></div>
+    <div class="refs-row"><div class="refs-title">المتطلبات العامة للأغذية المحورة وراثياً</div><div class="refs-code">GSO 2142</div></div>
+    <div class="refs-row"><div class="refs-title">الإرشادات العامة للادعاءات المضللة للأغذية</div><div class="refs-code">GSO CAC GL 1</div></div>
+    <div class="refs-row"><div class="refs-title">كمية المنتج في العبوات المعبأة مسبقاً</div><div class="refs-code">GSO OIML R 87</div></div>
+    <div class="refs-row"><div class="refs-title">عبوات المواد الغذائية — الاشتراطات العامة</div><div class="refs-code">GSO 839</div></div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CHECKLIST DATA
+// ═══════════════════════════════════════════════════════════
+var CL_SECS = [
+  {n:1,t:'اسم المنتج الغذائي',g:[
+    {t:'الفحوصات المطلوبة',i:[
+      {t:'الاسم يعكس الطبيعة الحقيقية للغذاء — غير غامض أو مضلل',k:'req',r:'GSO 9:2022 ص.5 §1.1.5'},
+      {t:'إذا حددت مواصفة خليجية اسماً للغذاء يجب استخدام هذا الاسم بالضبط',k:'req',r:'GSO 9:2022 ص.5 §2.1.5'},
+      {t:'إذا لم يوجد اسم قياسي يُقبل الاسم الشائع أو المتعارف عليه',k:'opt',r:'GSO 9:2022 ص.5 §3.1.5'},
+      {t:'تُذكر الحالة الفيزيائية أو طريقة المعالجة (مجفف، مدخن، مركز، معاد تكوينه)',k:'crit',r:'GSO 9:2022 ص.5 §4.1.5'},
+      {t:'إذا أُحلّ مكوّن محل آخر يُذكر ذلك بجانب الاسم أو ضمن قائمة المكونات',k:'crit',r:'GSO 9:2022 ص.5 §5.1.5'},
+    ]},
+  ]},
+  {n:2,t:'قائمة المكونات ومسببات الحساسية',w:'عدم الإعلان عن مسبب حساسية معروف = رفض فوري',g:[
+    {t:'هيكل قائمة المكونات',i:[
+      {t:'تسبقها عبارة "المكونات" أو "المحتويات" أو ما يعادلها',k:'req',r:'GSO 9:2022 ص.6 §2.2.5'},
+      {t:'جميع المكونات مرتبة تنازلياً حسب الوزن وقت التصنيع',k:'req',r:'GSO 9:2022 ص.6 §3.2.5'},
+      {t:'المكونات المركبة تُدرج مكوناتها الفرعية بين قوسين إذا تجاوزت 5% من المنتج',k:'crit',r:'GSO 9:2022 ص.6 §4.2.5'},
+      {t:'الماء المضاف يُذكر في مكانه الصحيح حسب الوزن إلا إذا تبخّر',k:'req',r:'GSO 9:2022 ص.7 §6.2.5'},
+    ]},
+    {t:'⚠ مسببات الحساسية — يجب الإعلان عن كل ما ينطبق',i:[
+      {t:'الحبوب المحتوية على الغلوتين: القمح والشيلم والشعير والشوفان ومنتجاتها',k:'crit',r:'GSO 9:2022 ص.7 §1.5.2.5'},
+      {t:'القشريات ومنتجاتها',k:'crit',r:'GSO 9:2022 ص.7 §2.5.2.5'},
+      {t:'البيض ومنتجاته',k:'crit',r:'GSO 9:2022 ص.7 §3.5.2.5'},
+      {t:'الأسماك ومنتجاتها (باستثناء الجيلاتين كناقل)',k:'crit',r:'GSO 9:2022 ص.7 §4.5.2.5'},
+      {t:'الفول السوداني وفول الصويا ومنتجاتهما (باستثناء الزيوت المكررة)',k:'crit',r:'GSO 9:2022 ص.8 §5.5.2.5'},
+      {t:'الحليب ومنتجات الألبان بما يشمل اللاكتوز (باستثناء اللاكتيتول)',k:'crit',r:'GSO 9:2022 ص.7 §7.5.2.5'},
+      {t:'المكسرات: اللوز والبندق والجوز والكاجو والبيكان والفستق والماكاديميا',k:'crit',r:'GSO 9:2022 ص.7 §6.5.2.5'},
+      {t:'الكرفس والخردل وبذور السمسم ومنتجاتها',k:'crit',r:'GSO 9:2022 ص.8 §9.5.2.5'},
+      {t:'ثاني أكسيد الكبريت والكبريتيت بأكثر من 10 جزء في المليون',k:'crit',r:'GSO 9:2022 ص.8 §8.5.2.5'},
+      {t:'الترمس ومنتجاتها',k:'crit',r:'GSO 9:2022 ص.8 §12.5.2.5'},
+      {t:'الرخويات ومنتجاتها',k:'crit',r:'GSO 9:2022 ص.8 §5.2.2.5'},
+    ]},
+    {t:'المضافات الغذائية',i:[
+      {t:'المضافات مُدرجة باسم فئتها الوظيفية (الجدول 2) + الاسم المحدد أو رقم E',k:'req',r:'GSO 9:2022 ص.10 §3.9.2.5'},
+      {t:'فقط المضافات المرخصة وفق GSO 2500 موجودة في المنتج',k:'crit',r:'GSO 9:2022 ص.10'},
+    ]},
+  ]},
+  {n:3,t:'صافي المحتويات والوزن',g:[
+    {t:'الوزن الصافي والحجم',i:[
+      {t:'صافي المحتويات مُعلن بالنظام المتري (النظام الدولي للوحدات)',k:'req',r:'GSO 9:2022 ص.11 §1.4.5'},
+      {t:'السوائل: بالحجم؛ المواد الصلبة: بالوزن؛ شبه الصلبة: بالوزن أو الحجم',k:'req',r:'GSO 9:2022 ص.11 §2.4.5'},
+      {t:'وزن الصفو يُذكر منفصلاً عندما يكون الغذاء في وسط سائل',k:'req',r:'GSO 9:2022 ص.11 §3.4.5'},
+      {t:'يُقاس الوزن الصافي عند: 25°م بيئي؛ 18°م- مجمد؛ 4°م+ مبرد',k:'req',r:'GSO 9:2022 ص.11 §4.4.5'},
+      {t:'الكمية في العبوة تطابق المقدار المُعلن (وفق GSO OIML R 87)',k:'crit',r:'GSO 9:2022 ص.11 §5.4.5'},
+    ]},
+  ]},
+  {n:4,t:'الصانع والمستورد',g:[
+    {t:'الهوية والعنوان',i:[
+      {t:'اسم وعنوان المصنع أو المعبئ مذكور باللغة العربية أو الإنجليزية',k:'req',r:'GSO 9:2022 ص.12 §1.5.5'},
+      {t:'يمكن إضافة اسم وعنوان الموزع المحلي أو المستورد أو الوكيل',k:'opt',r:'GSO 9:2022 ص.12 §2.5.5'},
+      {t:'الكويت / السعودية: اسم وعنوان المستورد المحلي إلزامي على المنتجات المستوردة',k:'crit',r:'GSO 9:2022 ص.12 حاشية²'},
+    ]},
+  ]},
+  {n:5,t:'بلد المنشأ',g:[
+    {t:'الإعلان عن بلد المنشأ',i:[
+      {t:'بلد التصنيع أو الإنتاج مذكور بوضوح على البطاقة',k:'req',r:'GSO 9:2022 ص.12 §1.6.5'},
+      {t:'إذا خضع الغذاء لمعالجة جوهرية في بلد ثانٍ غيّرت طبيعته فذلك البلد هو بلد المنشأ',k:'req',r:'GSO 9:2022 ص.12 §2.6.5'},
+    ]},
+  ]},
+  {n:6,t:'التواريخ وتعليمات التخزين',w:'ملصقات تغطي تواريخ أصلية أو تواريخ مزدوجة أو معدّلة = رفض فوري',g:[
+    {t:'الإعلان عن التواريخ',i:[
+      {t:'تاريخ انتهاء الصلاحية مذكور بوضوح — غير مزوّر أو مغطّى بملصق',k:'crit',r:'GSO 9:2022 ص.12 §1.7.5'},
+      {t:'التاريخ بشكل قابل للقراءة بالأرقام والحروف وليس رموزاً مشفرة وحدها',k:'req',r:'GSO 9:2022 ص.12 §3.7.5'},
+      {t:'الرموز: P أو (P) للإنتاج؛ E أو (E) للانتهاء؛ I للأفضل قبل نهاية',k:'req',r:'GSO 9:2022 ص.12 §2.7.5'},
+      {t:'تاريخ واحد فقط في العبوة — لا تواريخ مزدوجة ولا تعديلات',k:'crit',r:'GSO 9:2022 ص.13 §7.7.5'},
+      {t:'فترة الصلاحية ضمن الحدود في GSO 150-1 (إلزامي) و GSO 150-2 (اختياري)',k:'req',r:'GSO 150-1 ؛ 150-2'},
+    ]},
+    {t:'التخزين وتعليمات الاستخدام',i:[
+      {t:'شروط التخزين مذكورة إذا كانت الصلاحية تعتمد على ظروف خاصة',k:'req',r:'GSO 9:2022 ص.12 §4.7.5'},
+      {t:'تعليمات التحضير والاستخدام مذكورة إذا كانت ضرورية للسلامة',k:'req',r:'GSO 9:2022 ص.12 §5.7.5'},
+      {t:'إذا تغيرت الصلاحية بعد الفتح يُعلن عن المدة المسموحة',k:'opt',r:'GSO 9:2022 ص.13 §6.7.5'},
+    ]},
+  ]},
+  {n:7,t:'البيانات التغذوية (GSO 2233:2025)',g:[
+    {t:'المغذيات الإلزامية — الجدول 2',i:[
+      {t:'قيمة الطاقة بالكيلو سعر (kcal) والكيلو جول (kJ) معاً',k:'req',r:'GSO 2233:2025 جدول 2'},
+      {t:'إجمالي البروتين (غرام)',k:'req',r:'GSO 2233:2025 جدول 2'},
+      {t:'إجمالي الكربوهيدرات (غرام) — باستثناء البوليولات',k:'req',r:'GSO 2233:2025 جدول 2'},
+      {t:'الألياف الغذائية (غرام)',k:'req',r:'GSO 2233:2025 جدول 2'},
+      {t:'إجمالي الدهون (غرام) — المشبعة (غرام) — المتحولة (غرام)',k:'req',r:'GSO 2233:2025 جدول 2'},
+      {t:'الكولسترول (ملغ) — الصوديوم (ملغ)',k:'req',r:'GSO 2233:2025 جدول 2'},
+      {t:'مجموع السكريات (غرام) — السكر المضاف (غرام) منفصلَين',k:'req',r:'GSO 2233:2025 جدول 2'},
+    ]},
+    {t:'الصيغة والتعبير',i:[
+      {t:'القيم لكل 100 غرام أو 100 مل وكذلك لكل حصة غذائية إذا ذُكرت',k:'req',r:'GSO 2233:2025 §4'},
+      {t:'حجم الحصة الغذائية وعدد الحصص في العبوة مذكور',k:'req',r:'GSO 2233:2025 §4'},
+      {t:'معاملات التحويل: كربوهيدرات=4؛ بروتين=4؛ دهون=9؛ بوليولات=2.4 kcal/غ',k:'crit',r:'GSO 2233:2025 §4'},
+    ]},
+    {t:'المنتجات المعفاة',i:[
+      {t:'الفواكه والخضروات الطازجة غير المقطوعة بدون إضافات',k:'opt',r:'GSO 2233:2025 §4'},
+      {t:'المواد الغذائية ذات المكوّن الواحد (سكر، زيت، عسل، ملح، ماء، خل)',k:'opt',r:'GSO 2233:2025 §4'},
+      {t:'عبوات مساحة سطحها أقل من 25 سم² — يمكن حذف جدول التغذية',k:'opt',r:'GSO 2233:2025 §4'},
+    ]},
+  ]},
+  {n:8,t:'طريقة العرض واللغة',g:[
+    {t:'متطلبات اللغة',i:[
+      {t:'اللغة العربية هي اللغة الأساسية الإلزامية لجميع أسواق دول الخليج',k:'crit',r:'GSO 9:2022 ص.15 §1.2.7'},
+      {t:'يُسمح بإضافة لغة ثانية (إنجليزية أو غيرها) إلى جانب النص العربي',k:'opt',r:'GSO 9:2022 ص.15 §1.2.7'},
+      {t:'الملصق العربي: لا يخفي بيانات إلزامية ومعتمد من الجهة المختصة',k:'crit',r:'GSO 9:2022 ص.15 §2.2.7'},
+      {t:'ملصق عربي واحد فقط مسموح به في العبوة الواحدة',k:'req',r:'GSO 9:2022 ص.15 §1.2.2.7'},
+    ]},
+    {t:'العرض الفيزيائي للبطاقة',i:[
+      {t:'البطاقة ثابتة ولا يمكن فصلها عن العبوة',k:'req',r:'GSO 9:2022 ص.14 §1.1.7'},
+      {t:'جميع النصوص واضحة وبارزة وغير قابلة للمحو وسهلة القراءة',k:'req',r:'GSO 9:2022 ص.14 §2.1.7'},
+      {t:'اسم المنتج والوزن الصافي مرئيان في نفس مجال الرؤية',k:'req',r:'GSO 9:2022 ص.14 §4.1.7'},
+      {t:'الغذاء المعالج بالإشعاع: الرمز الدولي للإشعاع وبيان مكتوب',k:'crit',r:'GSO 9:2022 ص.13 §1.9.5'},
+    ]},
+  ]},
+  {n:9,t:'الادعاءات والمحتوى المحظور',g:[
+    {t:'المحظور على البطاقة',i:[
+      {t:'لا معلومات مضللة: أوصاف كاذبة أو خصائص مُوحَى بها أو مقارنات مضللة',k:'crit',r:'GSO 9:2022 ص.4 §1.4'},
+      {t:'لا ادعاءات بأن الغذاء يمنع أو يعالج أو يشفي مرضاً',k:'crit',r:'GSO 9:2022 ص.4 §2.4'},
+      {t:'لا ادعاء حلال أو رمز ديني دون إثبات موثّق وفق GSO 2055-1',k:'crit',r:'GSO 9:2022 ص.4 §3.4'},
+      {t:'لا شهادات إدارة جودة (مثل ISO 9001) على بطاقة المستهلك',k:'req',r:'GSO 9:2022 ص.4 §4.4'},
+      {t:'لا ادعاء بالعضوية دون شهادة معتمدة وفق GSO 2374',k:'crit',r:'GSO 9:2022 ص.2 §10/2'},
+      {t:'لا ادعاء بالمحورة الوراثية دون استيفاء GSO 2142',k:'crit',r:'GSO 9:2022 ص.2 §11/2'},
+    ]},
+    {t:'الادعاءات التغذوية والصحية',i:[
+      {t:'الادعاءات التغذوية تستوفي الحدود المحددة في GSO 2233:2025 و GSO 2333:2022',k:'crit',r:'GSO 2233:2025 §4.2'},
+      {t:'الادعاءات الصحية مدعومة علمياً ومعتمدة مسبقاً وفق GSO 2333:2022',k:'crit',r:'GSO 2333:2022 §5'},
+      {t:'عند وجود أي ادعاء: جدول البيانات التغذوية الكامل يجب أن يكون موجوداً',k:'crit',r:'GSO 2233:2025 §4.2'},
+    ]},
+  ]},
+];
+
+// ═══════════════════════════════════════════════════════════
+// CLAIMS DATA
+// ═══════════════════════════════════════════════════════════
+var CL_CLAIMS = [
+  {id:'n1',tp:'nutrition',nm:'قليل الدهون — Low Fat',st:'conditional',f:['all','dairy','meat','fish','bakery','processed'],
+   d:'يُسمح به إذا كان محتوى الدهون لا يتجاوز الحدود المحددة.',
+   c:'الدهون لا تزيد عن 3 غ/100 غ (صلب) أو 1.5 غ/100 مل (سائل).',
+   th:[{l:'صلب',v:'≤ 3 غ / 100 غ'},{l:'سائل',v:'≤ 1.5 غ / 100 مل'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n2',tp:'nutrition',nm:'خالٍ من الدهون — Fat Free',st:'conditional',f:['all','dairy','meat','fish','bakery','processed'],
+   d:'يُسمح به إذا كان محتوى الدهون ضئيلاً جداً.',c:'الدهون لا تزيد عن 0.5 غ/100 غ أو 100 مل.',
+   th:[{l:'الحد الأقصى',v:'≤ 0.5 غ / 100 غ أو مل'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n3',tp:'nutrition',nm:'قليل الدهون المشبعة — Low Saturated Fat',st:'conditional',f:['all','dairy','meat','fats','processed'],
+   d:'يُسمح به إذا لم تتجاوز الدهون المشبعة والمتحولة مجتمعةً الحد المحدد.',
+   c:'مشبعة+متحولة ≤ 1.5 غ/100 غ (صلب) أو ≤ 0.75 غ/100 مل (سائل)، ولا تتجاوز 10% من الطاقة.',
+   th:[{l:'صلب',v:'≤ 1.5 غ / 100 غ'},{l:'سائل',v:'≤ 0.75 غ / 100 مل'},{l:'نسبة الطاقة',v:'≤ 10%'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n4',tp:'nutrition',nm:'قليل السكر — Low Sugar',st:'conditional',f:['all','dairy','beverages','bakery','processed'],
+   d:'يُسمح به عند استيفاء الحد المحدد من مجموع السكريات.',
+   c:'السكريات لا تزيد عن 5 غ/100 غ (صلب) أو 2.5 غ/100 مل (سائل).',
+   th:[{l:'صلب',v:'≤ 5 غ / 100 غ'},{l:'سائل',v:'≤ 2.5 غ / 100 مل'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n5',tp:'nutrition',nm:'خالٍ من السكر — Sugar Free',st:'conditional',f:['all','dairy','beverages','bakery','processed'],
+   d:'يُسمح به عند استيفاء الحد.',c:'السكريات لا تزيد عن 0.5 غ/100 غ أو 100 مل.',
+   th:[{l:'الحد الأقصى',v:'≤ 0.5 غ / 100 غ أو مل'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n6',tp:'nutrition',nm:'قليل الصوديوم — Low Sodium',st:'conditional',f:['all','meat','fish','dairy','bakery','processed'],
+   d:'يُسمح به عند استيفاء الحد المحدد.',c:'الصوديوم لا يزيد عن 120 ملغ/100 غ أو 100 مل.',
+   th:[{l:'الحد الأقصى',v:'≤ 120 ملغ / 100 غ أو مل'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n7',tp:'nutrition',nm:'خالٍ من الصوديوم — Sodium Free',st:'conditional',f:['all','meat','fish','bakery','processed'],
+   d:'يُسمح به عند استيفاء الحد.',c:'الصوديوم لا يزيد عن 5 ملغ/100 غ أو 100 مل.',
+   th:[{l:'الحد الأقصى',v:'≤ 5 ملغ / 100 غ أو مل'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n8',tp:'nutrition',nm:'غني بالألياف — High Fibre',st:'conditional',f:['all','bakery','fruits','processed'],
+   d:'يُسمح به عند استيفاء الحد الأدنى للألياف الغذائية.',
+   c:'الألياف لا تقل عن 6 غ/100 غ أو 3 غ/100 kcal.',
+   th:[{l:'بالكمية',v:'≥ 6 غ / 100 غ'},{l:'بالطاقة',v:'≥ 3 غ / 100 kcal'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n9',tp:'nutrition',nm:'مصدر للألياف — Source of Fibre',st:'conditional',f:['all','bakery','fruits','processed'],
+   d:'يُسمح به عند استيفاء الحد الأدنى.',c:'الألياف لا تقل عن 3 غ/100 غ أو 1.5 غ/100 kcal.',
+   th:[{l:'بالكمية',v:'≥ 3 غ / 100 غ'},{l:'بالطاقة',v:'≥ 1.5 غ / 100 kcal'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n10',tp:'nutrition',nm:'غني بالبروتين — High Protein',st:'conditional',f:['all','meat','fish','dairy','processed'],
+   d:'يُسمح به عند استيفاء الحد الأدنى.',c:'البروتين لا يقل عن 20% من الطاقة الكلية.',
+   th:[{l:'نسبة الطاقة من البروتين',v:'≥ 20% من الطاقة'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n11',tp:'nutrition',nm:'قليل السعرات — Low Energy / Light',st:'conditional',f:['all','beverages','dairy','processed'],
+   d:'يُسمح به عند استيفاء الحد المحدد للطاقة.',
+   c:'الطاقة لا تزيد عن 40 kcal/100 غ (صلب) أو 20 kcal/100 مل (سائل).',
+   th:[{l:'صلب',v:'≤ 40 kcal / 100 غ'},{l:'سائل',v:'≤ 20 kcal / 100 مل'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'n12',tp:'nutrition',nm:'خالٍ من السعرات — Zero Calorie',st:'conditional',f:['all','beverages'],
+   d:'يُسمح به عند استيفاء الحد.',c:'الطاقة لا تزيد عن 4 kcal/100 غ أو 100 مل.',
+   th:[{l:'الحد الأقصى',v:'≤ 4 kcal / 100 غ أو مل'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'ct1',tp:'content',nm:'خالٍ من الكوليسترول — Cholesterol Free',st:'conditional',f:['all','fats','dairy','processed'],
+   d:'يُسمح به مع شرط إضافي للدهون المشبعة.',
+   c:'الكوليسترول ≤ 5 ملغ/100 غ، والدهون المشبعة+المتحولة ≤ 1.5 غ/100 غ.',
+   th:[{l:'الكوليسترول',v:'≤ 5 ملغ / 100 غ أو مل'},{l:'مشبعة+متحولة',v:'≤ 1.5 غ / 100 غ'}],rf:'GSO 2333:2022 جدول 1'},
+  {id:'ct2',tp:'content',nm:'خالٍ من الغلوتين — Gluten Free',st:'conditional',f:['all','bakery','processed'],
+   d:'يُسمح به عند استيفاء الحد المحدد.',c:'الغلوتين ≤ 20 ppm في المنتج النهائي.',
+   th:[{l:'الحد الأقصى',v:'≤ 20 ppm'}],rf:'GSO 2333:2022 + Codex STAN 118'},
+  {id:'ct3',tp:'content',nm:'خالٍ من اللاكتوز — Lactose Free',st:'conditional',f:['dairy','processed'],
+   d:'يُسمح به عند استيفاء الحد المحدد.',c:'اللاكتوز ≤ 0.01 غ/100 غ أو 100 مل.',
+   th:[{l:'الحد الأقصى',v:'≤ 0.01 غ / 100 غ أو مل'}],rf:'GSO 2333:2022'},
+  {id:'ct4',tp:'content',nm:'طبيعي — Natural',st:'conditional',f:['all','fruits','beverages'],
+   d:'يُسمح به للمنتجات غير الخاضعة لمعالجة مصطنعة أو إضافات اصطناعية.',
+   c:'لا يجوز على المنتجات المحتوية على مواد صناعية أو معالجة كيميائياً.',rf:'GSO 2333:2022 + GSO 9:2022 §4.1'},
+  {id:'ct5',tp:'content',nm:'عضوي — Organic',st:'conditional',f:['all','fruits','dairy','meat'],
+   d:'لا يُسمح إلا بعد الحصول على شهادة اعتماد وفق GSO 2374.',
+   c:'يشترط شهادة اعتماد عضوي صادرة عن جهة معترف بها مع ذكر اسمها على البطاقة.',rf:'GSO 2374 + GSO 9:2022 §4.4'},
+  {id:'ct6',tp:'content',nm:'حلال — Halal',st:'conditional',f:['all','meat','fish','dairy','processed'],
+   d:'لا يُسمح إلا بشهادة حلال معتمدة وفق GSO 2055-1.',
+   c:'يشترط شهادة حلال معتمدة مع ذكر اسم جهة الاعتماد. رمز مشابه دون شهادة = مخالفة.',rf:'GSO 2055-1 + GSO 9:2022 §4.3'},
+  {id:'ct7',tp:'content',nm:'طازج — Fresh',st:'conditional',f:['fruits','meat','fish','dairy'],
+   d:'يُسمح به للأغذية غير المعالجة حرارياً أو المحفوظة بطرق مصطنعة.',
+   c:'لا يجوز على المجمدة أو المعلبة أو المضاف إليها مواد حافظة.',rf:'GSO 9:2022 §4.1 + GSO 2333:2022'},
+  {id:'ct8',tp:'content',nm:'مدعّم / مضاف إليه فيتامينات — Fortified',st:'conditional',f:['all','dairy','beverages','bakery','processed'],
+   d:'يُسمح به إذا كانت الكمية المضافة تحقق أثراً تغذوياً ذا معنى.',
+   c:'الكمية المضافة ≥ 15% من القيمة المرجعية اليومية لكل 100 غ أو 100 مل.',
+   th:[{l:'الحد الأدنى',v:'≥ 15% من القيمة المرجعية / 100 غ أو مل'}],rf:'GSO 2333:2022 جدول 2'},
+  {id:'ct9',tp:'content',nm:'لا يحتوي على GMO — Non-GMO',st:'conditional',f:['all'],
+   d:'يُسمح به وفق اشتراطات GSO 2142 فقط مع توثيق كافٍ.',
+   c:'يجب إثبات الخلو من المكوّنات المحوّرة وراثياً باختبارات معتمدة.',rf:'GSO 2142 + GSO 9:2022 §4.4'},
+  {id:'cmp1',tp:'comparative',nm:'مخفض / أقل — Reduced / Less',st:'conditional',f:['all'],
+   d:'يُسمح بالادعاءات المقارنة مثل "أقل دهوناً" أو "مخفض السكر" مقارنةً بالمنتج المرجعي.',
+   c:'الفرق ≥ 25% في المكوّن موضع الادعاء مع تحديد المنتج المرجعي بوضوح.',
+   th:[{l:'الحد الأدنى للفرق',v:'≥ 25% مقارنة بالمرجع'}],rf:'GSO 2333:2022 §4'},
+  {id:'cmp2',tp:'comparative',nm:'أكثر / معزز — More / Enriched',st:'conditional',f:['all'],
+   d:'يُسمح به للادعاءات المقارنة بزيادة مغذٍّ ما مقارنةً بالمرجع.',
+   c:'الفارق ≥ 25% من القيمة المرجعية مع ذكر المنتج المرجعي.',
+   th:[{l:'الحد الأدنى للفارق',v:'≥ 25% من القيمة المرجعية'}],rf:'GSO 2333:2022 §4'},
+  {id:'cmp3',tp:'comparative',nm:'خفيف / لايت — Light / Lite',st:'conditional',f:['all','dairy','fats','processed'],
+   d:'يُسمح كادعاء تغذوي أو مقارن.',
+   c:'كتغذوي: سعرات أو دهون مخفضة ≥25%. كمقارن: مقارنة بمنتج مرجعي محدد.',
+   th:[{l:'تخفيض الطاقة أو الدهون',v:'≥ 25% مقارنة بالمرجع'}],rf:'GSO 2333:2022 §4'},
+  {id:'h1',tp:'health',nm:'مفيد لصحة القلب — Heart Healthy',st:'conditional',f:['all','fats','fish','bakery','processed'],
+   d:'يُسمح شريطة الاعتماد المسبق من الجهة المختصة.',
+   c:'يجب اعتماد مسبق. المنتج قليل الدهون المشبعة والمتحولة والصوديوم.',rf:'GSO 2333:2022 §5 + GSO 9:2022 §4.2'},
+  {id:'h2',tp:'health',nm:'يساعد على خفض الكوليسترول',st:'conditional',f:['all','fats','bakery','processed'],
+   d:'يُسمح به شريطة أدلة علمية كافية واعتماد مسبق.',
+   c:'يرتبط بالأستيرول النباتي أو الألياف الذائبة. يتطلب اعتماداً مسبقاً.',rf:'GSO 2333:2022 §5'},
+  {id:'h3',tp:'health',nm:'الكالسيوم لبناء العظام',st:'conditional',f:['dairy','beverages','processed'],
+   d:'يُسمح للمنتجات الغنية بالكالسيوم مع اعتماد مسبق.',
+   c:'الكالسيوم ≥ 15% من القيمة المرجعية لكل 100 غ أو مل. يتطلب اعتماداً مسبقاً.',
+   th:[{l:'الحد الأدنى للكالسيوم',v:'≥ 15% من القيمة المرجعية'}],rf:'GSO 2333:2022 §5'},
+  {id:'p1',tp:'health',nm:'يعالج / يشفي / يمنع مرضاً — Disease Claim',st:'prohibited',f:['all'],
+   d:'يُحظر تماماً ادعاء أن الغذاء يعالج أو يشفي أو يمنع أي مرض.',
+   c:'محظور — لا استثناء إلا بإذن كتابي صريح من الجهة التنظيمية المختصة.',rf:'GSO 9:2022 §4.2 + GSO 2333:2022 §5'},
+  {id:'p2',tp:'health',nm:'ادعاء صحي غير معتمد — Unapproved Health Claim',st:'prohibited',f:['all'],
+   d:'يُحظر أي ادعاء صحي غير مدرج في قائمة الادعاءات المعتمدة.',
+   c:'محظور — جميع الادعاءات الصحية تتطلب اعتماداً مسبقاً.',rf:'GSO 2333:2022 §5 + GSO 9:2022 §4.2'},
+  {id:'p3',tp:'nutrition',nm:'ادعاء تغذوي بدون جدول تغذية',st:'prohibited',f:['all'],
+   d:'يُحظر استخدام أي ادعاء تغذوي أو صحي دون وجود جدول البيانات التغذوية الكامل.',
+   c:'محظور — عند وجود أي ادعاء يجب أن يكون جدول التغذية موجوداً.',rf:'GSO 2233:2025 §4.2 + GSO 2333:2022'},
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+var ST = {};
+try{ ST = JSON.parse(localStorage.getItem('pafn_v3')||'{}'); }catch(e){}
+function save(){ try{ localStorage.setItem('pafn_v3', JSON.stringify(ST)); }catch(e){} }
+
+// ═══════════════════════════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════════════════════════
+var TABS = ['cover','howto','check','claims','refs'];
+function goTo(name){
+  TABS.forEach(function(t){
+    document.getElementById('s-'+t).classList.remove('active');
+    document.getElementById('tab-'+t).classList.remove('active');
+  });
+  document.getElementById('s-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHECKLIST
+// ═══════════════════════════════════════════════════════════
+function buildChecklist(){
+  var h='';
+  CL_SECS.forEach(function(sec){
+    h+='<div class="sec-card">';
+    h+='<div class="sec-hdr" data-sec="'+sec.n+'">';
+    h+='<div class="sec-num-badge">'+sec.n+'</div>';
+    h+='<div class="sec-title">'+sec.t+'</div>';
+    h+='<span class="sec-chev open" id="sc'+sec.n+'">▼</span>';
+    h+='</div>';
+    h+='<div class="sec-body open" id="sb'+sec.n+'" style="display:block">';
+    var idx=0;
+    sec.g.forEach(function(grp){
+      h+='<div class="grp-hdr">'+grp.t+'</div>';
+      grp.i.forEach(function(item){
+        var key='s'+sec.n+'_'+idx;
+        var on=ST[key]?'on':'';
+        var tc={'req':'t-req','crit':'t-crit','opt':'t-opt'}[item.k]||'t-opt';
+        var tl={'req':'إلزامي','crit':'حرج','opt':'اختياري'}[item.k]||'اختياري';
+        h+='<div class="chk-row" data-key="'+key+'">';
+        h+='<div class="chk-txt-col">';
+        h+='<div class="chk-txt">'+item.t+'</div>';
+        h+='<div class="tags"><span class="tag '+tc+'">'+tl+'</span><span class="gso-tag">'+item.r+'</span></div>';
+        h+='</div>';
+        h+='<div class="cb-col"><div class="cb '+on+'" id="cb_'+key+'"></div></div>';
+        h+='</div>';
+        idx++;
+      });
+    });
+    if(sec.w) h+='<div class="sec-warn">⚠ '+sec.w+'</div>';
+    h+='</div></div>';
+  });
+  document.getElementById('checkContainer').innerHTML=h;
+  updProg();
+}
+
+function togSec(n){
+  var b=document.getElementById('sb'+n);
+  var c=document.getElementById('sc'+n);
+  var op=b.style.display!=='none';
+  b.style.display=op?'none':'block';
+  c.classList.toggle('open',!op);
+}
+
+function togCheck(key){
+  ST[key]=!ST[key]; save();
+  var el=document.getElementById('cb_'+key);
+  if(el) el.classList.toggle('on',!!ST[key]);
+  updProg();
+}
+
+function updProg(){
+  var tot=0,dn=0;
+  CL_SECS.forEach(function(sec){
+    var idx=0;
+    sec.g.forEach(function(grp){
+      grp.i.forEach(function(){
+        tot++;
+        if(ST['s'+sec.n+'_'+idx]) dn++;
+        idx++;
+      });
+    });
+  });
+  var pct=tot?Math.round(dn/tot*100):0;
+  document.getElementById('pFill').style.width=pct+'%';
+  document.getElementById('pCount').textContent=dn+' / '+tot;
+}
+
+document.getElementById('resetBtn').addEventListener('click', function(){
+  var ok=window.confirm('مسح جميع التأشيرات؟');
+  if(!ok) return;
+  ST={}; save();
+  document.querySelectorAll('.cb').forEach(function(el){el.classList.remove('on');});
+  updProg();
+});
+
+// ═══════════════════════════════════════════════════════════
+// CLAIMS
+// ═══════════════════════════════════════════════════════════
+var cFood='all', cType='all', cStat='all';
+
+function pickFood(v,el){
+  cFood=v;
+  document.querySelectorAll('.food-chip').forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on');
+  renderClaims();
+}
+function pickType(v,el){
+  cType=v;
+  document.querySelectorAll('#typeChips .chip').forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on');
+  renderClaims();
+}
+function pickStatus(v,el){
+  cStat=v;
+  document.querySelectorAll('#statusChips .chip').forEach(function(c){c.classList.remove('on');});
+  el.classList.add('on');
+  renderClaims();
+}
+
+function renderClaims(){
+  var list=CL_CLAIMS.filter(function(c){
+    return (cFood==='all'||c.f.indexOf(cFood)>=0)
+        && (cType==='all'||c.tp===cType)
+        && (cStat==='all'||c.st===cStat);
+  });
+  document.getElementById('claimsTitle').textContent='النتائج ('+list.length+' ادعاء)';
+  if(!list.length){
+    document.getElementById('claimsList').innerHTML='<div class="no-results"><div style="font-size:36px;margin-bottom:8px">🔍</div>لا توجد ادعاءات مطابقة للفلاتر المحددة</div>';
+    return;
+  }
+  var bl={'allowed':'c-allowed','conditional':'c-conditional','prohibited':'c-prohibited'};
+  var lb={'allowed':'✓ مسموح','conditional':'⚡ مشروط','prohibited':'✕ محظور'};
+  var h='';
+  list.forEach(function(c){
+    var condCls=c.st==='allowed'?' green':c.st==='prohibited'?' red':'';
+    h+='<div class="claim-card '+c.st+'">';
+    h+='<div class="claim-hdr" data-id="'+c.id+'">';
+    h+='<div class="claim-chev" id="cc'+c.id+'">▼</div>';
+    h+='<div class="claim-name">'+c.nm+'</div>';
+    h+='<span class="c-badge '+bl[c.st]+'">'+lb[c.st]+'</span>';
+    h+='</div>';
+    h+='<div class="claim-body" id="cb'+c.id+'">';
+    h+='<div class="claim-detail">'+c.d+'</div>';
+    if(c.c) h+='<div class="claim-cond'+condCls+'">'+c.c+'</div>';
+    if(c.th&&c.th.length){
+      h+='<div class="thr-table">';
+      c.th.forEach(function(t){h+='<div class="thr-row"><span class="thr-lbl">'+t.l+'</span><span class="thr-val">'+t.v+'</span></div>';});
+      h+='</div>';
+    }
+    h+='<div style="margin-top:7px"><span class="claim-ref">'+c.rf+'</span></div>';
+    h+='</div></div>';
+  });
+  document.getElementById('claimsList').innerHTML=h;
+}
+
+function togClaim(id){
+  var b=document.getElementById('cb'+id);
+  var v=document.getElementById('cc'+id);
+  var op=b.classList.contains('open');
+  b.classList.toggle('open',!op);
+  v.classList.toggle('open',!op);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PWA MANIFEST + SERVICE WORKER
+// ═══════════════════════════════════════════════════════════
+var mf={name:'دليل بطاقات وصف الاغذية',short_name:'دليل الغذاء',
+  start_url:'.',display:'standalone',background_color:'#f0ede6',theme_color:'#0F6E56',
+  dir:'rtl',lang:'ar',orientation:'portrait-primary',
+  icons:[{src:'./icon-192.png',sizes:'192x192',type:'image/png',purpose:'any maskable'},
+         {src:'./icon-192.png',sizes:'512x512',type:'image/png',purpose:'any maskable'}]};
+try{
+  var mb=new Blob([JSON.stringify(mf)],{type:'application/json'});
+  var ml=document.createElement('link');
+  ml.rel='manifest';ml.href=URL.createObjectURL(mb);
+  document.head.appendChild(ml);
+}catch(e){}
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(function(){});
+}
+
+var dp=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();dp=e;
+  document.getElementById('installBar').classList.remove('hidden');
+});
+function doInstall(){
+  if(!dp)return;
+  dp.prompt();
+  dp.userChoice.then(function(){dp=null;document.getElementById('installBar').classList.add('hidden');});
+}
+var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+if(isIOS&&!navigator.standalone&&!localStorage.getItem('ios_hint')){
+  document.getElementById('iosBar').classList.remove('hidden');
+  localStorage.setItem('ios_hint','1');
+}
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+// Event delegation — fixes onclick-in-JS-string bug
+document.addEventListener('click', function(e) {
+  var hdr = e.target.closest('[data-sec]');
+  if (hdr) { togSec(parseInt(hdr.getAttribute('data-sec'))); return; }
+  var row = e.target.closest('[data-key]');
+  if (row) { togCheck(row.getAttribute('data-key')); return; }
+  var clm = e.target.closest('[data-id]');
+  if (clm) { togClaim(clm.getAttribute('data-id')); return; }
+});
+
+buildChecklist();
+renderClaims();
+</script>
+</body>
+</html>
